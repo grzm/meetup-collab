@@ -8,6 +8,7 @@ EVENT_DATE=
 REPO_URL=
 DEFAULT_GROUP_COUNT=9
 GROUP_COUNT=
+DO_COPY_ONLY=
 
 usage () {
     cat <<EOF
@@ -21,13 +22,13 @@ Examples:
 
   $0 -d 2017-12-13
 
-
 Creates collab event directory and optionally clones and duplicates
 a repo into a number of group subdirectories.
 
    OPTIONS:
    -d  event date. REQUIRED
    -n  number of groups to create. Defaults to ${GROUP_COUNT}
+       Passing -n 0 means no copies will be made.
    -r  git repo URL. If left blank, an empty template directory
        will be created and no additional copies made.
 EOF
@@ -71,7 +72,9 @@ ln -s "${COLLAB_DIR}" "${COLLAB_SYMLINK}"
 if [[ -n "${REPO_URL}" ]] ; then
     git clone "${REPO_URL}" "${TEMPLATE_DIR}"
     rm -rf "${TEMPLATE_DIR}/.git"
+fi
 
+if [ "${GROUP_COUNT}" -gt 0 ] ; then
     for GROUP in $(seq 1 "${GROUP_COUNT}"); do
         rsync -av "${COLLAB_DIR}/group-template/" "${COLLAB_DIR}/group${GROUP}/"
     done
