@@ -47,4 +47,4 @@ The `current` symlink will be set to `collab/2017-12-13`.
 
 Inspired by (*read: blatantly stolen from*) the [Southern New Hampshire
 Clojure Meetup Collaboration Repo](https://github.com/snh-clj/collab).
-(Thanks, [Aaron](https://github.com/abrooks))!
+(Thanks, [Aaron](https://github.com/abrooks)!)
