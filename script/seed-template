@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -eu
+
+COLLAB_SYMLINK=current
+
+EVENT_DATE=
+REPO_URL=
+DEFAULT_GROUP_COUNT=9
+GROUP_COUNT=
+
+usage () {
+    cat <<EOF
+Usage: $0 options
+
+Examples:
+
+  $0 -d 2017-12-13 -r https://github.com/user/example-project.git
+
+  $0 -d 2017-12-13 -n 12 -r https://github.com/user/example-project.git
+
+  $0 -d 2017-12-13
+
+
+Creates collab event directory and optionally clones and duplicates
+a repo into a number of group subdirectories.
+
+   OPTIONS:
+   -d  event date. REQUIRED
+   -n  number of groups to create. Defaults to ${GROUP_COUNT}
+   -r  git repo URL. If left blank, an empty template directory
+       will be created and no additional copies made.
+EOF
+}
+
+while getopts "d:n:r:?" OPTION
+do
+    case $OPTION in
+        d ) EVENT_DATE="${OPTARG}"
+            ;;
+        n ) GROUP_COUNT="${OPTARG}"
+            ;;
+        r ) REPO_URL="${OPTARG}"
+            ;;
+        ? ) usage
+            exit
+            ;;
+        * ) usage
+            exit 1
+            ;;
+    esac
+done
+
+if [[ -z "${EVENT_DATE}" ]] ; then
+    echo "Please supply an event date via -d"
+    usage
+    exit 1
+fi
+
+if [[ -z "${GROUP_COUNT}" ]] ; then
+    GROUP_COUNT="${DEFAULT_GROUP_COUNT}"
+fi
+
+COLLAB_DIR="collab/${EVENT_DATE}"
+TEMPLATE_DIR="${COLLAB_DIR}/group-template"
+
+mkdir -p "${COLLAB_DIR}"
+[ -L "${COLLAB_SYMLINK}" ] && rm "${COLLAB_SYMLINK}"
+ln -s "${COLLAB_DIR}" "${COLLAB_SYMLINK}"
+
+if [[ -n "${REPO_URL}" ]] ; then
+    git clone "${REPO_URL}" "${TEMPLATE_DIR}"
+    rm -rf "${TEMPLATE_DIR}/.git"
+
+    for GROUP in $(seq 1 "${GROUP_COUNT}"); do
+        rsync -av "${COLLAB_DIR}/group-template/" "${COLLAB_DIR}/group${GROUP}/"
+    done
+fi
