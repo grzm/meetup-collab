@@ -3,4 +3,4 @@
 set -eu
 
 lein uberjar
-zip "${HALITE_ZIPFILENAME}" target/MyBot.jar
+zip -j "${HALITE_ZIPFILENAME}" target/MyBot.jar
