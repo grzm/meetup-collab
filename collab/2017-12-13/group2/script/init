@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+## Download Halite tools
+## This should only be called once when setting up the
+## collaboration environment for event: no need to call
+## this for each collab group.
+
+set -eu
+
+HALITE_II_CLONE_DIR=~/halite2/
+HALITE_II_BRANCH=halite-config-dir
+# get custom Halite client tools
+git clone https://github.com/grzm/Halite-II.git "${HALITE_II_CLONE_DIR}"
+cd "${HALITE_II_CLONE_DIR}/tools/hlt_client/"
+git checkout "${HALITE_II_BRANCH}"
+pip3 install ./
+cd -
+
+# get halite environment binary
+
+curl --create-dirs -o ~/tmp/Halite2_Linux-x64.zip \
+     https://halite.io/assets/downloads/Halite2_Linux-x64.zip
+unzip ~/tmp/Halite2_Linux-x64.zip -d ~/bin/

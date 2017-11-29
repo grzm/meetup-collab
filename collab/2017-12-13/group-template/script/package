@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -eu
+
+lein uberjar
+zip "${HALITE_ZIPFILENAME}" target/MyBot.jar
