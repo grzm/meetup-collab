@@ -3,4 +3,4 @@
 set -eu
 
 lein uberjar
-zip -j "${HALITE_ZIPFILENAME}" target/MyBot.jar
+zip -r "${HALITE_ZIPFILENAME}" project.clj target/* src/*
