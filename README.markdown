@@ -26,6 +26,23 @@ logging into the remote host and either `cd`'ing into
 `meetup-collab/current/groupX` (where `X` is your group) or some other
 session-specific environment (such as `tmux`).
 
+The `join-group` helper script can simplify this:
+
+```bash
+### log in to remote instance
+ssh meetup@meetup.example.com
+
+### after successful login, run join-group with your group number to join
+### the corresponding tmux session, creating one if one doesn't already exist.
+join-group 1
+```
+
+### tmux
+
+Thoughtbot has put together a good ["crash course" in tmux][tmux-crash-course]:
+
+[tmux-crash-course]: https://robots.thoughtbot.com/a-tmux-crash-course
+
 ## Set up
 
 The [`seed-template`](script/seed-template) script provides a convenient
@@ -42,6 +59,31 @@ script/seed-template -d 2017-12-13 -r https://github.com/gigasquid/wonderland-cl
 The `current` symlink will be set to `collab/2017-12-13`.
 
 [aiw-katas]: https://github.com/gigasquid/wonderland-clojure-katas
+
+## Wrap up
+
+After the collab event has finished, it's nice to be able to share the results
+of the project. To push the changes to github, use [ssh forwarding][github-ssh-agent-forwarding] to use your
+local keys on the remote instance. So, log into the remote instance
+
+[github-ssh-agent-forwarding]: https://developer.github.com/v3/guides/using-ssh-agent-forwarding/
+
+```bash
+ssh -A meetup@meetup.example.com
+```
+On the remote instance, you can test if your credentials were properly forwarded:
+
+```bash
+ssh -T git@github.com
+Hi <username>! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+Then, push the changes
+
+```bash
+cd meetup-collab
+script/push-changes
+```
 
 ## Thanks!
 
